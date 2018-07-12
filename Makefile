@@ -1,9 +1,9 @@
 SHELL := /usr/bin/env bash
 MAKEFILES=messages/Makefile \
+	formatter/Makefile \
 	gherkin/Makefile \
 	datatable/Makefile \
 	config/Makefile \
-	event-protocol/Makefile \
 	cucumber-expressions/Makefile \
 	tag-expressions/Makefile
 

@@ -1,37 +1,14 @@
-SHELL := /usr/bin/env bash
-GOPATH := $(shell go env GOPATH)
+include default.mk
 
-default: test
-.PHONY: default
+default: .tested
 
-test: deps link messages.pb.go
-	go test
-.PHONY: clean
-
-link: ${GOPATH}/src/github.com/cucumber/cucumber-messages-go
-.PHONY: link
-
-${GOPATH}/src/github.com/cucumber/cucumber-messages-go:
-	mkdir -p ${GOPATH}/src/github.com/cucumber
-	rm -rf ${GOPATH}/src/github.com/cucumber/cucumber-messages-go
-	ln -fs ${CURDIR} ${GOPATH}/src/github.com/cucumber/cucumber-messages-go
-.PHONY: default
-
-deps: ${GOPATH}/src/github.com/stretchr/testify ${GOPATH}/src/github.com/golang/protobuf/protoc-gen-go
-.PHONY: deps
-
-${GOPATH}/src/github.com/stretchr/testify:
-	go get github.com/stretchr/testify
-
-${GOPATH}/src/github.com/golang/protobuf/protoc-gen-go:
+.deps:
+	go get github.com/gogo/protobuf/protoc-gen-gofast
 	go get github.com/golang/protobuf/protoc-gen-go
+	go get github.com/stretchr/testify
+	touch $@
+
+.tested: messages.pb.go
 
 messages.pb.go: messages.proto
-	PATH="$$(go env GOPATH)/bin:${PATH}" protoc --go_out=. $<
-
-clean:
-.PHONY: clean
-
-clobber: clean
-	rm -f messages.pb.go
-.PHONY: clobber
+	PATH="$$(go env GOPATH)/bin:${PATH}" protoc --gofast_out=. $<
